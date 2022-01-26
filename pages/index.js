@@ -1,6 +1,28 @@
 import React from 'react'
 import appConfig from '../config.json'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import * as Yup from 'yup';
+
+function useFormik({
+  initialValues
+}) {
+  const [values, setValues] = React.useState(initialValues)
+
+  function handleChange(e){
+    const fieldName = e.target.getAttribute('name')
+    const value = e.target.value
+    setValues({
+      ...values,
+      [fieldName]: value
+    })
+  }
+
+  return {
+    values,
+    handleChange
+  }
+}
+
 
 function GlobalStyle() {
   return (
@@ -74,9 +96,13 @@ function Title(props) {
 export default HomePage*/
 
 export default function PaginaInicial() {
-  //const username = 'eduardohpaludo';
-  const [username, setUserName] = React.useState('')
 
+  const formik = useFormik({
+    initialValues: {
+      username: 'eduardohpaludo'
+    },
+  })
+  
   return (
     <>
       <GlobalStyle />
@@ -115,7 +141,6 @@ export default function PaginaInicial() {
             <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300], fontFamily: 'F1Regular' }}>
               {appConfig.name}
             </Text>
-
             <TextField
               fullWidth
               textFieldColors={{
@@ -126,11 +151,15 @@ export default function PaginaInicial() {
                   backgroundColor: appConfig.theme.colors.neutrals[800]
                 },
               }}
-              value={username}
-              onChange={function handler(e){
-                const valor = e.target.value
-                setUserName(valor)
-              }}
+              name="username"
+              id="username"
+              value={formik.values.username}
+              //value={username}
+              // onChange={function handler(e){
+              //   const valor = e.target.value
+              //   setUserName(valor)
+              // }}
+              onChange={formik.handleChange}
             />
             <Button
               type='submit'
@@ -168,7 +197,7 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={`https://github.com/${formik.values.username}.png`}
             />
             <Text
               variant="body4"
@@ -180,7 +209,7 @@ export default function PaginaInicial() {
                 fontFamily: 'F1Regular'
               }}
             >
-              {username}
+            {formik.values.username}
             </Text>
           </Box>
           {/* Photo Area */}
