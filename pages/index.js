@@ -1,7 +1,7 @@
 import React from 'react'
 import appConfig from '../config.json'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
-import * as Yup from 'yup';
+import { useRouter } from 'next/router'
 
 function useFormik({
   initialValues
@@ -21,49 +21,6 @@ function useFormik({
     values,
     handleChange
   }
-}
-
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      @font-face {
-        font-family: 'F1Bold';
-        font-style: bold;
-        font-weight: 800;
-        font-display: swap;
-        src: local('F1Bold'), url(/fonts/Formula1-Bold.woff2) format('woff2');
-      }
-      @font-face {
-        font-family: 'F1Regular';
-        font-weight: 500;
-        font-display: swap;
-        src: local('F1Regular'), url(/fonts/Formula1-Regular.woff2) format('woff2');
-      }
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-        }
-        body {
-          font-family: 'F1Bold', sans-serif;
-        }
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-        #__next {
-          flex: 1;
-        }
-        #__next > * {
-          flex: 1;
-        }
-        /* ./App fit Height */
-      `}</style>
-  );
 }
 
 function Title(props) {
@@ -97,15 +54,17 @@ export default HomePage*/
 
 export default function PaginaInicial() {
 
+  const route = useRouter()
+  const image = "https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-Clip-Art-Transparent-PNG.png"
+
   const formik = useFormik({
     initialValues: {
-      username: 'eduardohpaludo'
+      username: ''
     },
   })
   
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -131,6 +90,11 @@ export default function PaginaInicial() {
         >
           {/* Formulário */}
           <Box
+            onSubmit={function(e){
+              e.preventDefault();
+              route.push('/chat')
+
+            }}
             as="form"
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -197,7 +161,12 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${formik.values.username}.png`}
+              
+              src={
+                formik.values.username.length > 2
+                  ? `https://github.com/${formik.values.username}.png`
+                  : image
+              }
             />
             <Text
               variant="body4"
@@ -209,7 +178,10 @@ export default function PaginaInicial() {
                 fontFamily: 'F1Regular'
               }}
             >
-            {formik.values.username}
+            {formik.values.username.length > 2
+              ? formik.values.username
+              : ""
+            }
             </Text>
           </Box>
           {/* Photo Area */}
